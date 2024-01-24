@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,request
 
 app=Flask(__name__)
 
@@ -41,6 +41,43 @@ def fun(n1,n2):
 def func1(ab="UTL"):
     return "El valor es "+ab
 
+
+@app.route("/multiplicar",methods=["GET","POST"])
+def mul():
+    if request.method=="POST":
+        num1=request.form.get("n1")
+        num2=request.form.get("n2")
+        return  f'<h1>La multiplicación es: {str(int(num1) * int(num2))} </h1>'
+    else:
+        return '''
+        <from action"/multiplicar" method="POST">
+        <laber>n1:</label>
+        <input type="text" name="n1"/><br>
+        <laber>n2:</label>
+        <input type="text" name="n2"/><br>
+        <input type="submit"/>
+        </from>
+
+
+    '''
+
+
+@app.route("/formulario1")
+def formulario():
+    return render_template("formulario1.html")
+
+
+@app.route("/resultado",methods=["GET","POST"])
+def resultado():
+    if request.method=="POST":
+        num1=request.form.get("n1")
+        num2=request.form.get("n2")
+        return  f'<h1>La multiplicación es: {str(int(num1) * int(num2))} </h1>'
+    
+
 #especificar el metodo que va a arrancar la aplicacion 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=True)    
+
+
+    
