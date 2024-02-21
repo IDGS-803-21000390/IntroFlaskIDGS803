@@ -1,30 +1,58 @@
-from flask import Flask,render_template,request
-
+from flask import Flask,render_template,request,flash,Response,g
+from flask_wtf.csrf import CSRFProtect
+from flask import redirect
 import forms
+
 app=Flask(__name__)
+app.secret_key='esta es la clave secreta'
 
 
-@app.route("/")
+@app.route("/index")
 def index():
+    g.nombre='Daniel'
     escuela="UTL!!"
     alumnos=["yazmin","simon","mary","sergio"]
     return render_template("index.html",escuela=escuela,alumnos=alumnos)
 
 @app.route("/alumnos",methods=["GET","POST"])
 def alum():
+    print('dentro del alumno')
+    print('Hola {}'.format(g.nombre))
     alum_form=forms.UsarForm(request.form)
     nom=''
     apa=''
     ama=''
+    mensaje=''
     #para validar que los campos no tengan un error se agrega el validate 
     if request.method=='POST' and alum_form.validate():
         nom=alum_form.nombre.data
         apa=alum_form.apaterno.data
         ama=alum_form.amaterno.data
+        mensaje='Bienvenido {}'.format(nom)
+        flash(mensaje)
         print("nombre: {}".format(nom))
         print("Apellido Paterno: {}".format(apa))
         print("Apellido Materno: {}".format(ama))
     return render_template("alumnos.html",form=alum_form,nom=nom,apa=apa,ama=ama)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'),404
+
+
+@app.before_request
+def before_request():
+    #g.nombre='Daniel valencia'
+    #regresa la direcion de la pagina endpoint
+  
+    print('before_request')
+
+@app.after_request
+def after_request(response):
+    print('ultimo')
+    if 'Daniel' not in g.nombre and request.endpoint not in ['/index']:
+        return redirect('index.html')
+    return response
 
 @app.route("/maestros")
 def maes():

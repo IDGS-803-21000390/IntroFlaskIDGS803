@@ -22,4 +22,4 @@ class UsarForm(Form):
         validators.DataRequired(message='el campo es requerido'),
         validators.number_range(min=1,max=20,message='valor no valido')
     ])
-    correo=EmailField('email', [validators.Email(message='Ingresa un correo valido')])
+    correo=EmailField('email',[validators.Email(message='Ingresa un correo valido')])
